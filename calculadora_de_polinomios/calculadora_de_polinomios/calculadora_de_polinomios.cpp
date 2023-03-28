@@ -277,6 +277,28 @@ bool subtrairDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 	return true;
 }
 
+bool somarDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
+{
+	if (pol1 == NULL || pol2 == NULL || resultado == NULL) return false;
+
+	if (!listaEstaVazia(*resultado)) return false;
+
+	No *aux = pol1->comeco;
+
+	while (aux != NULL) {
+		inserirListaEmOrdem(resultado, aux->constante, aux->expoente);
+		aux = aux->proximo;
+	}
+
+	aux = pol2->comeco;
+	while (aux != NULL) {
+		inserirListaEmOrdem(resultado, (aux->constante), aux->expoente);
+		aux = aux->proximo;
+	}
+
+	return true;
+}
+
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS
 
 int main()
@@ -300,8 +322,10 @@ int main()
 	inserirListaEmOrdem(&lista2, 3, 1);
 	inserirListaEmOrdem(&lista2, 5, 2);
 
+	cout << "A(x) = ";
 	imprimirLista(&lista);
 	cout << endl;
+	cout << "B(x) = ";
 	imprimirLista(&lista2);
 	cout << endl;
 
@@ -315,11 +339,21 @@ int main()
 
 	subtrairDoisPolinomios(sub, &lista, &lista2);
 
+	Lista *sum = new Lista;
+	inicializarLista(*sum);
+
+	somarDoisPolinomios(sum, &lista, &lista2);
+
 	cout << "Produto de dois polinomios: ";
 	imprimirLista(produto);
 	cout << endl;
 
+	cout << "Subtracao de dois polinomios: ";
 	imprimirLista(sub);
+	cout << endl;
+
+	cout << "Soma de dois polinomios: ";
+	imprimirLista(sum);
 	cout << endl;
 
 	return 0;
