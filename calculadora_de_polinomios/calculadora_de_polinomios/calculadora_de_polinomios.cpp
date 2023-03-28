@@ -306,9 +306,13 @@ int main()
 	cout << endl;
 
 	Lista *produto = new Lista;
+	inicializarLista(*produto);
+
 	multiplicarPolinomios(produto, &lista, &lista2);
 	
 	Lista *sub = new Lista;
+	inicializarLista(*sub);
+
 	subtrairDoisPolinomios(sub, &lista, &lista2);
 
 	cout << "Produto de dois polinomios: ";
