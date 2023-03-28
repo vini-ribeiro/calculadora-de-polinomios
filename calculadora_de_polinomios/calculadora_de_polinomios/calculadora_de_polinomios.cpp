@@ -45,6 +45,8 @@ bool listaEstaVazia(Lista &lista)
 
 bool elementoExiste(Lista *lista, int grauMonomio)
 {
+	if (lista == NULL) return false;
+
 	if (listaEstaVazia(*lista)) return false;
 
 	No *aux = lista->comeco;
@@ -59,6 +61,8 @@ bool elementoExiste(Lista *lista, int grauMonomio)
 
 No* removerDaLista(Lista *lista, int grauMonomio)
 {
+	if (lista == NULL) return NULL;
+
 	if (listaEstaVazia(*lista)) return NULL;
 
 	No *aux = lista->comeco;
@@ -106,6 +110,8 @@ No* removerDaLista(Lista *lista, int grauMonomio)
 
 bool inserirFimLista(Lista *lista, double cons, int exp)
 {
+	if (lista == NULL) return false;
+
 	if (cons == 0.0) return true;
 
 	No *novoElemento = criarNo(cons, exp);
@@ -128,6 +134,8 @@ bool inserirFimLista(Lista *lista, double cons, int exp)
 
 bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 {
+	if (lista == NULL) return false;
+
 	if (cons == 0.0) return true;
 
 	if (listaEstaVazia(*lista)) {
@@ -186,7 +194,12 @@ bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 
 void imprimirLista(Lista *lista)
 {
+	if (lista == NULL) return ;
+
 	No *aux = lista->comeco;
+
+	if (listaEstaVazia(*lista)) cout << "0";
+
 	while (aux != NULL) {
 		cout << "(" << aux->constante << ")x^(" << aux->expoente << ") ";
 
@@ -196,8 +209,10 @@ void imprimirLista(Lista *lista)
 	}
 }
 
-No* retirarInicioLista(Lista *lista) /// FUNCAO UTILITARIA
+No* retirarInicioLista(Lista *lista)
 {
+	if (lista == NULL) return NULL;
+
 	if (listaEstaVazia(*lista)) return NULL;
 
 	if (lista->comeco == lista->fim) {
@@ -217,16 +232,18 @@ No* retirarInicioLista(Lista *lista) /// FUNCAO UTILITARIA
 }
 
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS
-Lista* multiplicarPolinomios(Lista *lista1, Lista *lista2)
+bool multiplicarPolinomios(Lista *produto, Lista *pol1, Lista *pol2)
 {
-	Lista *produto = new Lista;
+	if (pol1 == NULL || pol2 == NULL || produto == NULL) return false;
 
-	inicializarLista(*produto);
+	if (!listaEstaVazia(*produto)) return false;
 
-	No *aux1 = lista1->comeco, *aux2;
+	if (listaEstaVazia(*pol1) || listaEstaVazia(*pol2)) return true;
+
+	No *aux1 = pol1->comeco, *aux2;
 
 	while (aux1 != NULL) {
-		aux2 = lista2->comeco;
+		aux2 = pol2->comeco;
 		while (aux2 != NULL) {
 			inserirListaEmOrdem(produto, (aux1->constante) * (aux2->constante), (aux1->expoente) + (aux2->expoente));
 			aux2 = aux2->proximo;
@@ -235,7 +252,29 @@ Lista* multiplicarPolinomios(Lista *lista1, Lista *lista2)
 		aux1 = aux1->proximo;
 	}
 
-	return produto;
+	return true;
+}
+
+bool subtrairDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
+{
+	if (pol1 == NULL || pol2 == NULL || resultado == NULL) return false;
+
+	if (!listaEstaVazia(*resultado)) return false;
+
+	No *aux = pol1->comeco;
+
+	while (aux != NULL) {
+		inserirListaEmOrdem(resultado, aux->constante, aux->expoente);
+		aux = aux->proximo;
+	}
+
+	aux = pol2->comeco;
+	while (aux != NULL) {
+		inserirListaEmOrdem(resultado, (aux->constante)*(-1), aux->expoente);
+		aux = aux->proximo;
+	}
+
+	return true;
 }
 
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS
@@ -261,28 +300,23 @@ int main()
 	inserirListaEmOrdem(&lista2, 3, 1);
 	inserirListaEmOrdem(&lista2, 5, 2);
 
-	Lista *produto = multiplicarPolinomios(&lista, &lista2);
+	imprimirLista(&lista);
+	cout << endl;
+	imprimirLista(&lista2);
+	cout << endl;
 
-	/// REFAZER EM FORMA DE FUNÇÃO
+	Lista *produto = new Lista;
+	multiplicarPolinomios(produto, &lista, &lista2);
+	
+	Lista *sub = new Lista;
+	subtrairDoisPolinomios(sub, &lista, &lista2);
+
 	cout << "Produto de dois polinomios: ";
 	imprimirLista(produto);
+	cout << endl;
+
+	imprimirLista(sub);
+	cout << endl;
 
 	return 0;
 }
-
-// Executar programa: Ctrl + F5 ou Menu Depurar > Iniciar Sem Depuração
-// Depurar programa: F5 ou menu Depurar > Iniciar Depuração
-
-// Dicas para Começar:
-//   1. Use a janela do Gerenciador de Soluções para adicionar/gerenciar
-//   arquivos
-//   2. Use a janela do Team Explorer para conectar-se ao controle do
-//   código-fonte
-//   3. Use a janela de Saída para ver mensagens de saída do build e outras
-//   mensagens
-//   4. Use a janela Lista de Erros para exibir erros
-//   5. Ir Para o Projeto > Adicionar Novo Item para criar novos arquivos de
-//   código, ou Projeto > Adicionar Item Existente para adicionar arquivos de
-//   código existentes ao projeto
-//   6. No futuro, para abrir este projeto novamente, vá para Arquivo > Abrir >
-//   Projeto e selecione o arquivo. sln
