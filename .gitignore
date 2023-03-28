@@ -1,1 +1,11 @@
 .vs
+calculadora_de_polinomios/calculadora_de_polinomios/x64/Debug/calculad.6342af74.tlog/calculadora_de_polinomios.lastbuildstate
+calculadora_de_polinomios/calculadora_de_polinomios/x64/Debug/calculad.6342af74.tlog/CL.command.1.tlog
+*.tlog
+*.recipe
+*.ilk
+*.log
+*.obj
+*.pdb
+*.idb
+*.exe
