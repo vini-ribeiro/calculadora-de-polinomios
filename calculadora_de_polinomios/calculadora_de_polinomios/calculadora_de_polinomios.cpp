@@ -299,6 +299,20 @@ bool somarDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 	return true;
 }
 
+bool dividirPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
+{
+	if (pol1 == NULL || pol2 == NULL || resultado == NULL) return false;
+
+	if (!listaEstaVazia(*resultado)) return false;
+
+	if (listaEstaVazia(*pol2)) return false;
+
+	if (listaEstaVazia(*pol1)) return true;
+
+	if (pol1->comeco->expoente < pol2->comeco->expoente) return true;
+
+	return true;
+}
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS
 
 int main()
@@ -308,7 +322,7 @@ int main()
 	inicializarLista(lista);
 
 	inserirListaEmOrdem(&lista, -2, 0);
-	inserirListaEmOrdem(&lista, 3, 1);
+	inserirListaEmOrdem(&lista, 1, 1);
 	/*inserirListaEmOrdem(&lista, 6, 2);
 	inserirListaEmOrdem(&lista, 1, 4);
 	inserirListaEmOrdem(&lista, 4, 3);
@@ -318,9 +332,9 @@ int main()
 
 	inicializarLista(lista2);
 
-	inserirListaEmOrdem(&lista2, 2, 0);
-	inserirListaEmOrdem(&lista2, 3, 1);
-	inserirListaEmOrdem(&lista2, 5, 2);
+	inserirListaEmOrdem(&lista2, 4, 0);
+	inserirListaEmOrdem(&lista2, 2, 1);
+	inserirListaEmOrdem(&lista2, 1, 2);
 
 	cout << "A(x) = ";
 	imprimirLista(&lista);
