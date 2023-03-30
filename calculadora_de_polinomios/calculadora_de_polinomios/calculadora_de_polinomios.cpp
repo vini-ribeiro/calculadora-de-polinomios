@@ -112,6 +112,8 @@ bool inserirFimLista(Lista *lista, double cons, int exp)
 {
 	if (lista == NULL) return false;
 
+	if (exp < 0) return false;
+
 	if (cons == 0.0) return true;
 
 	No *novoElemento = criarNo(cons, exp);
@@ -135,6 +137,8 @@ bool inserirFimLista(Lista *lista, double cons, int exp)
 bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 {
 	if (lista == NULL) return false;
+
+	if (exp < 0) return false;
 
 	if (cons == 0.0) return true;
 
@@ -194,7 +198,7 @@ bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 
 void imprimirLista(Lista *lista)
 {
-	if (lista == NULL) return ;
+	if (lista == NULL) return;
 
 	No *aux = lista->comeco;
 
@@ -232,11 +236,33 @@ No* retirarInicioLista(Lista *lista)
 }
 
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS
+bool apagaPolinomio(Lista *polinomio)
+{
+	if (polinomio == NULL) return false;
+
+	if (listaEstaVazia(*polinomio)) return true;
+
+	No *monomio_removido;
+	int i = 0;
+
+	while (!listaEstaVazia(*polinomio) && i <= 100) {
+		if (elementoExiste(polinomio, i)) {
+			monomio_removido = removerDaLista(polinomio, i);
+			delete monomio_removido;
+		}
+		++i;
+	}
+
+	return true;
+}
+
 bool multiplicarPolinomios(Lista *produto, Lista *pol1, Lista *pol2)
 {
 	if (pol1 == NULL || pol2 == NULL || produto == NULL) return false;
 
-	if (!listaEstaVazia(*produto)) return false;
+	if (!listaEstaVazia(*produto)) {
+		if (!apagaPolinomio(produto)) return false;
+	}
 
 	if (listaEstaVazia(*pol1) || listaEstaVazia(*pol2)) return true;
 
@@ -259,7 +285,9 @@ bool subtrairDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 {
 	if (pol1 == NULL || pol2 == NULL || resultado == NULL) return false;
 
-	if (!listaEstaVazia(*resultado)) return false;
+	if (!listaEstaVazia(*resultado)) {
+		if (!apagaPolinomio(resultado)) return false;
+	}
 
 	No *aux = pol1->comeco;
 
@@ -270,7 +298,7 @@ bool subtrairDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 
 	aux = pol2->comeco;
 	while (aux != NULL) {
-		inserirListaEmOrdem(resultado, (aux->constante)*(-1), aux->expoente);
+		inserirListaEmOrdem(resultado, (aux->constante) * (-1), aux->expoente);
 		aux = aux->proximo;
 	}
 
@@ -281,7 +309,9 @@ bool somarDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 {
 	if (pol1 == NULL || pol2 == NULL || resultado == NULL) return false;
 
-	if (!listaEstaVazia(*resultado)) return false;
+	if (!listaEstaVazia(*resultado)) {
+		if (!apagaPolinomio(resultado)) return false;
+	}
 
 	No *aux = pol1->comeco;
 
@@ -299,17 +329,49 @@ bool somarDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 	return true;
 }
 
-bool dividirPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
+bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *divisor)
 {
-	if (pol1 == NULL || pol2 == NULL || resultado == NULL) return false;
+	if (dividendo == NULL || divisor == NULL || quociente == NULL || resto == NULL) return false;
 
-	if (!listaEstaVazia(*resultado)) return false;
+	if (!listaEstaVazia(*quociente)) {
+		if (!apagaPolinomio(quociente)) return false;
+	}
 
-	if (listaEstaVazia(*pol2)) return false;
+	if (!listaEstaVazia(*resto)) {
+		if (!apagaPolinomio(resto)) return false;
+	}
 
-	if (listaEstaVazia(*pol1)) return true;
+	if (listaEstaVazia(*divisor)) return false;
 
-	if (pol1->comeco->expoente < pol2->comeco->expoente) return true;
+	if (listaEstaVazia(*dividendo)) return true;
+
+	if (dividendo->comeco->expoente < divisor->comeco->expoente) {
+		No *aux = dividendo->comeco;
+		while (aux != NULL) {
+			inserirListaEmOrdem(resto, aux->constante, aux->expoente);
+			aux = aux->proximo;
+		}
+
+		return true;
+	}
+
+	No *aux_divisor = divisor->comeco;
+	No *aux_dividendo = dividendo->comeco;
+	Lista *aux_produto;
+	inicializarLista(*aux_produto);
+
+	if (aux_divisor == NULL || aux_dividendo == NULL) return false;
+
+	while (aux_dividendo != NULL) {
+		double constante_quociente = (double) (aux_dividendo->constante) / (aux_divisor->constante);
+		int expoente_quociente = (aux_dividendo->expoente) - (aux_divisor->expoente);
+		
+		inserirListaEmOrdem(quociente, constante_quociente, expoente_quociente);
+		multiplicarPolinomios(aux_produto, divisor, dividendo);
+		
+
+		aux_dividendo = aux_dividendo->proximo;
+	}
 
 	return true;
 }
@@ -347,7 +409,7 @@ int main()
 	inicializarLista(*produto);
 
 	multiplicarPolinomios(produto, &lista, &lista2);
-	
+
 	Lista *sub = new Lista;
 	inicializarLista(*sub);
 
