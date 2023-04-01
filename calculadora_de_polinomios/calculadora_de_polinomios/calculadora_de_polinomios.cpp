@@ -398,21 +398,26 @@ int main()
 
 	inicializarLista(lista);
 
-	inserirListaEmOrdem(&lista, 1, 2);
+	/*inserirListaEmOrdem(&lista, 1, 2);
 	inserirListaEmOrdem(&lista, -2, 1);
-	inserirListaEmOrdem(&lista, 3, 0);
+	inserirListaEmOrdem(&lista, 3, 0);*/
+	inserirListaEmOrdem(&lista, 1, 1);
+	inserirListaEmOrdem(&lista, -2, 0);
 
 	Lista lista2;
 
 	inicializarLista(lista2);
 	
-	inserirListaEmOrdem(&lista2, 6, 6);
+	/*inserirListaEmOrdem(&lista2, 6, 6);
 	inserirListaEmOrdem(&lista2, 5, 5);
 	inserirListaEmOrdem(&lista2, 2, 4);
 	inserirListaEmOrdem(&lista2, -3, 3);
 	inserirListaEmOrdem(&lista2, 0, 2);
 	inserirListaEmOrdem(&lista2, 1, 1);
-	inserirListaEmOrdem(&lista2, -1, 0);
+	inserirListaEmOrdem(&lista2, -1, 0);*/
+	inserirListaEmOrdem(&lista2, 1, 2);
+	inserirListaEmOrdem(&lista2, 2, 1);
+	inserirListaEmOrdem(&lista2, 4, 0);
 
 	cout << "A(x) = ";
 	imprimirLista(&lista);
