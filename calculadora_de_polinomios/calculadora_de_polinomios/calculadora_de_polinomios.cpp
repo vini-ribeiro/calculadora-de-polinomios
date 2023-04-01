@@ -202,10 +202,18 @@ void imprimirLista(Lista *lista)
 
 	No *aux = lista->comeco;
 
-	if (listaEstaVazia(*lista)) cout << "0";
+	if (listaEstaVazia(*lista)) {
+		cout << "0";
+		return;
+	}
 
 	while (aux != NULL) {
-		cout << "(" << aux->constante << ")x^(" << aux->expoente << ") ";
+		if (aux->expoente > 1)
+			cout << "(" << aux->constante << ")x^(" << aux->expoente << ") ";
+		else if (aux->expoente == 1)
+			cout << "(" << aux->constante << ")x ";
+		else
+			cout << "(" << aux->constante << ") ";
 
 		if (aux->proximo != NULL) cout << "+ ";
 
@@ -357,25 +365,28 @@ bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *
 
 	double constante_quociente;
 	int expoente_quociente;
-	
+
 	No *primeiro_monomio_divisor = divisor->comeco;
 	No *primeiro_monomio_dividendo = dividendo->comeco;
-	
+
 	Lista *aux_resto = new Lista;
 	inicializarLista(*aux_resto);
 
 	do {
 		constante_quociente = (double) (primeiro_monomio_dividendo->constante) / (primeiro_monomio_divisor->constante);
 		expoente_quociente = (primeiro_monomio_dividendo->expoente) - (primeiro_monomio_divisor->expoente);
-		
+
 		inserirListaEmOrdem(quociente, constante_quociente, expoente_quociente);
 		multiplicarPolinomios(aux_resto, divisor, quociente);
 		subtrairDoisPolinomios(resto, dividendo, aux_resto);
-		
+
 		if (listaEstaVazia(*resto)) break;
 
 		primeiro_monomio_dividendo = resto->comeco;
 	} while (primeiro_monomio_dividendo->expoente >= primeiro_monomio_divisor->expoente);
+
+	apagaPolinomio(aux_resto);
+	delete aux_resto;
 
 	return true;
 }
@@ -387,20 +398,21 @@ int main()
 
 	inicializarLista(lista);
 
-	inserirListaEmOrdem(&lista, -2, 0);
-	inserirListaEmOrdem(&lista, 1, 1);
-	/*inserirListaEmOrdem(&lista, 6, 2);
-	inserirListaEmOrdem(&lista, 1, 4);
-	inserirListaEmOrdem(&lista, 4, 3);
-	inserirListaEmOrdem(&lista, 4, 3);*/
+	inserirListaEmOrdem(&lista, 1, 2);
+	inserirListaEmOrdem(&lista, -2, 1);
+	inserirListaEmOrdem(&lista, 3, 0);
 
 	Lista lista2;
 
 	inicializarLista(lista2);
-
-	inserirListaEmOrdem(&lista2, 4, 0);
-	inserirListaEmOrdem(&lista2, 2, 1);
-	inserirListaEmOrdem(&lista2, 1, 2);
+	
+	inserirListaEmOrdem(&lista2, 6, 6);
+	inserirListaEmOrdem(&lista2, 5, 5);
+	inserirListaEmOrdem(&lista2, 2, 4);
+	inserirListaEmOrdem(&lista2, -3, 3);
+	inserirListaEmOrdem(&lista2, 0, 2);
+	inserirListaEmOrdem(&lista2, 1, 1);
+	inserirListaEmOrdem(&lista2, -1, 0);
 
 	cout << "A(x) = ";
 	imprimirLista(&lista);
@@ -409,20 +421,27 @@ int main()
 	imprimirLista(&lista2);
 	cout << endl;
 
+	///TESTE DE MULTIPLICACAO DOS POLINOMIOS
 	Lista *produto = new Lista;
 	inicializarLista(*produto);
-
 	multiplicarPolinomios(produto, &lista, &lista2);
 
+	///TESTE DE SUBTRACAO DOS POLINOMIOS
 	Lista *sub = new Lista;
 	inicializarLista(*sub);
-
 	subtrairDoisPolinomios(sub, &lista, &lista2);
 
+	///TESTE DE SOMA DOS POLINOMIOS
 	Lista *sum = new Lista;
 	inicializarLista(*sum);
-
 	somarDoisPolinomios(sum, &lista, &lista2);
+
+	///TESTE DE DIVISAO DE POLINOMIOS
+	Lista *quociente = new Lista;
+	Lista *resto = new Lista;
+	inicializarLista(*quociente);
+	inicializarLista(*resto);
+	dividirPolinomios(quociente, resto, &lista2, &lista);
 
 	cout << "Produto de dois polinomios: ";
 	imprimirLista(produto);
@@ -434,6 +453,13 @@ int main()
 
 	cout << "Soma de dois polinomios: ";
 	imprimirLista(sum);
+	cout << endl;
+
+	cout << "B(x)/A(x): ";
+	cout << "\nQuociente: ";
+	imprimirLista(quociente);
+	cout << "\nResto: ";
+	imprimirLista(resto);
 	cout << endl;
 
 	return 0;
