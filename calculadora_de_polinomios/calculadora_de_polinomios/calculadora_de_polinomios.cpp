@@ -355,23 +355,27 @@ bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *
 		return true;
 	}
 
-	No *aux_divisor = divisor->comeco;
-	No *aux_dividendo = dividendo->comeco;
-	Lista *aux_produto;
-	inicializarLista(*aux_produto);
+	double constante_quociente;
+	int expoente_quociente;
+	
+	No *primeiro_monomio_divisor = divisor->comeco;
+	No *primeiro_monomio_dividendo = dividendo->comeco;
+	
+	Lista *aux_resto = new Lista;
+	inicializarLista(*aux_resto);
 
-	if (aux_divisor == NULL || aux_dividendo == NULL) return false;
-
-	while (aux_dividendo != NULL) {
-		double constante_quociente = (double) (aux_dividendo->constante) / (aux_divisor->constante);
-		int expoente_quociente = (aux_dividendo->expoente) - (aux_divisor->expoente);
+	do {
+		constante_quociente = (double) (primeiro_monomio_dividendo->constante) / (primeiro_monomio_divisor->constante);
+		expoente_quociente = (primeiro_monomio_dividendo->expoente) - (primeiro_monomio_divisor->expoente);
 		
 		inserirListaEmOrdem(quociente, constante_quociente, expoente_quociente);
-		multiplicarPolinomios(aux_produto, divisor, dividendo);
+		multiplicarPolinomios(aux_resto, divisor, quociente);
+		subtrairDoisPolinomios(resto, dividendo, aux_resto);
 		
+		if (listaEstaVazia(*resto)) break;
 
-		aux_dividendo = aux_dividendo->proximo;
-	}
+		primeiro_monomio_dividendo = resto->comeco;
+	} while (primeiro_monomio_dividendo->expoente >= primeiro_monomio_divisor->expoente);
 
 	return true;
 }
