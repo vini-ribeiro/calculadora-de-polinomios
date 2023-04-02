@@ -390,6 +390,27 @@ bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *
 
 	return true;
 }
+
+double potencia(double base, int expoente)
+{
+	if (expoente >= 1) {
+		return base * potencia(base, expoente - 1);
+	}
+
+	return 1;
+}
+
+double valorPolinomioEmX(Lista *polinomio, double x)
+{
+	double fx = 0.0;
+	No *aux = polinomio->comeco;
+	while (aux != NULL) {
+		fx += (aux->constante) * potencia(x, aux->expoente);
+		aux = aux->proximo;
+	}
+
+	return fx;
+}
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS
 
 int main()
@@ -466,6 +487,8 @@ int main()
 	cout << "\nResto: ";
 	imprimirLista(resto);
 	cout << endl;
+
+	cout << "Fazendo x = -7 para o quociente: " << valorPolinomioEmX(quociente, -7);
 
 	return 0;
 }
