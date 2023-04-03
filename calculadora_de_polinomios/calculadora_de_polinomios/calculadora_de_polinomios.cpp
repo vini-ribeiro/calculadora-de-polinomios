@@ -1,9 +1,9 @@
 #include <iostream>
-
 #include <string>
 
 using namespace std;
 
+/// FUNCOES RELACIONADAS COM O FUNCIONAMENTO DA LISTA ABAIXO
 struct No {
 	double constante;
 	int expoente;
@@ -242,8 +242,9 @@ No* retirarInicioLista(Lista *lista)
 
 	return elementoRetirar;
 }
+/// FUNCOES RELACIONADAS COM O FUNCIONAMENTO DA LISTA ACIMA
 
-/// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS
+/// FUNCOES AUXILIARES ABAIXO
 bool apagaPolinomio(Lista *polinomio)
 {
 	if (polinomio == NULL) return false;
@@ -264,6 +265,17 @@ bool apagaPolinomio(Lista *polinomio)
 	return true;
 }
 
+double potencia(double base, int expoente)
+{
+	if (expoente >= 1) {
+		return base * potencia(base, expoente - 1);
+	}
+
+	return 1;
+}
+/// FUNCOES AUXILIARES ACIMA
+
+/// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS ABAIXO
 bool multiplicarPolinomios(Lista *produto, Lista *pol1, Lista *pol2)
 {
 	if (pol1 == NULL || pol2 == NULL || produto == NULL) return false;
@@ -284,6 +296,26 @@ bool multiplicarPolinomios(Lista *produto, Lista *pol1, Lista *pol2)
 		}
 
 		aux1 = aux1->proximo;
+	}
+
+	return true;
+}
+
+bool multiplicarPolinomios(Lista *produto, Lista *pol, double escalar)
+{
+	if (pol == NULL || produto == NULL) return false;
+
+	if (!listaEstaVazia(*produto)) {
+		if (!apagaPolinomio(produto)) return false;
+	}
+
+	if (listaEstaVazia(*pol)) return true;
+
+	No *aux = pol->comeco;
+	while (aux != NULL) {
+		inserirListaEmOrdem(produto, (aux->constante) * escalar, (aux->expoente));
+
+		aux = aux->proximo;
 	}
 
 	return true;
@@ -391,16 +423,7 @@ bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *
 	return true;
 }
 
-double potencia(double base, int expoente)
-{
-	if (expoente >= 1) {
-		return base * potencia(base, expoente - 1);
-	}
-
-	return 1;
-}
-
-double valorPolinomioEmX(Lista *polinomio, double x)
+double valorNumericoPolinomio(Lista *polinomio, double x)
 {
 	double fx = 0.0;
 	No *aux = polinomio->comeco;
@@ -411,84 +434,92 @@ double valorPolinomioEmX(Lista *polinomio, double x)
 
 	return fx;
 }
-/// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS
+/// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS ACIMA
 
 int main()
 {
-	Lista lista;
+	Lista Ax;
 
-	inicializarLista(lista);
+	inicializarLista(Ax);
 
-	inserirListaEmOrdem(&lista, 1, 2);
-	inserirListaEmOrdem(&lista, -2, 1);
-	inserirListaEmOrdem(&lista, 3, 0);
-	inserirListaEmOrdem(&lista, 1, 1);
-	inserirListaEmOrdem(&lista, -2, 0);
+	inserirListaEmOrdem(&Ax, 1, 2);
+	inserirListaEmOrdem(&Ax, -2, 1);
+	inserirListaEmOrdem(&Ax, 3, 0);
+	inserirListaEmOrdem(&Ax, 1, 1);
+	inserirListaEmOrdem(&Ax, -2, 0);
 
-	Lista lista2;
+	Lista Bx;
 
-	inicializarLista(lista2);
-	
-	inserirListaEmOrdem(&lista2, 6, 6);
-	inserirListaEmOrdem(&lista2, 5, 5);
-	inserirListaEmOrdem(&lista2, 2, 4);
-	inserirListaEmOrdem(&lista2, -3, 3);
-	inserirListaEmOrdem(&lista2, 0, 2);
-	inserirListaEmOrdem(&lista2, 1, 1);
-	inserirListaEmOrdem(&lista2, -1, 0);
-	inserirListaEmOrdem(&lista2, 1, 2);
-	inserirListaEmOrdem(&lista2, 2, 1);
-	inserirListaEmOrdem(&lista2, 4, 0);
+	inicializarLista(Bx);
+
+	inserirListaEmOrdem(&Bx, 6, 6);
+	inserirListaEmOrdem(&Bx, 5, 5);
+	inserirListaEmOrdem(&Bx, 2, 4);
+	inserirListaEmOrdem(&Bx, -3, 3);
+	inserirListaEmOrdem(&Bx, 0, 2);
+	inserirListaEmOrdem(&Bx, 1, 1);
+	inserirListaEmOrdem(&Bx, -1, 0);
+	inserirListaEmOrdem(&Bx, 1, 2);
+	inserirListaEmOrdem(&Bx, 2, 1);
+	inserirListaEmOrdem(&Bx, 4, 0);
 
 	cout << "A(x) = ";
-	imprimirLista(&lista);
+	imprimirLista(&Ax);
 	cout << endl;
 	cout << "B(x) = ";
-	imprimirLista(&lista2);
+	imprimirLista(&Bx);
 	cout << endl;
 
 	///TESTE DE MULTIPLICACAO DOS POLINOMIOS
 	Lista *produto = new Lista;
 	inicializarLista(*produto);
-	multiplicarPolinomios(produto, &lista, &lista2);
+	multiplicarPolinomios(produto, &Ax, &Bx);
+
+	cout << "\nProduto de dois polinomios: A(x) * B(x) = ";
+	imprimirLista(produto);
+	cout << endl;
 
 	///TESTE DE SUBTRACAO DOS POLINOMIOS
 	Lista *sub = new Lista;
 	inicializarLista(*sub);
-	subtrairDoisPolinomios(sub, &lista, &lista2);
+	subtrairDoisPolinomios(sub, &Ax, &Bx);
+
+	cout << "\nSubtracao de dois polinomios: A(x) - B(x) = ";
+	imprimirLista(sub);
+	cout << endl;
 
 	///TESTE DE SOMA DOS POLINOMIOS
 	Lista *sum = new Lista;
 	inicializarLista(*sum);
-	somarDoisPolinomios(sum, &lista, &lista2);
+	somarDoisPolinomios(sum, &Ax, &Bx);
+
+	cout << "\nSoma de dois polinomios: A(x) + B(x) = ";
+	imprimirLista(sum);
+	cout << endl;
 
 	///TESTE DE DIVISAO DE POLINOMIOS
 	Lista *quociente = new Lista;
 	Lista *resto = new Lista;
 	inicializarLista(*quociente);
 	inicializarLista(*resto);
-	dividirPolinomios(quociente, resto, &lista2, &lista);
+	dividirPolinomios(quociente, resto, &Bx, &Ax);
 
-	cout << "Produto de dois polinomios: ";
-	imprimirLista(produto);
-	cout << endl;
-
-	cout << "Subtracao de dois polinomios: ";
-	imprimirLista(sub);
-	cout << endl;
-
-	cout << "Soma de dois polinomios: ";
-	imprimirLista(sum);
-	cout << endl;
-
-	cout << "B(x)/A(x): ";
+	cout << "\nDivisao de dois polinomios: B(x)/A(x): ";
 	cout << "\nQuociente: ";
 	imprimirLista(quociente);
 	cout << "\nResto: ";
 	imprimirLista(resto);
 	cout << endl;
 
-	cout << "Fazendo x = -7 para o quociente: " << valorPolinomioEmX(quociente, -7);
+	Lista *produtoEscalar = new Lista;
+	inicializarLista(*produtoEscalar);
+	multiplicarPolinomios(produtoEscalar, quociente, 5);
+
+	cout << "\nProduto do quociente por um escalar: ";
+	imprimirLista(produtoEscalar);
+	cout << endl;
+	
+	cout << "\nEncontrando o valor numeico de um polinomio: \nB(-7) = " << valorNumericoPolinomio(&Bx, -7) << endl;
 
 	return 0;
 }
