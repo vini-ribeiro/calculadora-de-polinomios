@@ -18,6 +18,7 @@ struct Lista {
 
 No* criarNo(double valorConstante, int valorExpoente)
 {
+	/// funcao para alocar memoria e atribuir os valores ao No
 	No *novoNo = new No;
 
 	if (novoNo == NULL) return NULL;
@@ -32,12 +33,14 @@ No* criarNo(double valorConstante, int valorExpoente)
 
 void inicializarLista(Lista &lista)
 {
+	/// inicia as variaveis da lista
 	lista.comeco = NULL;
 	lista.fim = NULL;
 }
 
 bool listaEstaVazia(Lista &lista)
 {
+	/// retorna true se a lista estiver vazia (false caso nao esteja)
 	if (lista.comeco == NULL) return true;
 
 	return false;
@@ -45,12 +48,14 @@ bool listaEstaVazia(Lista &lista)
 
 bool elementoExiste(Lista *lista, int grauMonomio)
 {
+	/// retorna true caso exista um monomio com o mesmo grau de grauMonomio
 	if (lista == NULL) return false;
 
 	if (listaEstaVazia(*lista)) return false;
 
 	No *aux = lista->comeco;
-
+	
+	/// varre a lista ate encontrar
 	while (aux != NULL) {
 		if (aux->expoente == grauMonomio) return true;
 		aux = aux->proximo;
@@ -136,12 +141,15 @@ bool inserirFimLista(Lista *lista, double cons, int exp)
 
 bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 {
+	/// os proximos dois ifs verificam se os argumentos são validos
 	if (lista == NULL) return false;
 
 	if (exp < 0) return false;
 
-	if (cons == 0.0) return true;
+	/// caso especial de um monomio (a constante zerada é como se não existisse)
+	if (cons == 0.0) return true; 
 
+	/// inserção de um elemento em uma lista vazia
 	if (listaEstaVazia(*lista)) {
 		No *novoElemento = criarNo(cons, exp);
 
@@ -153,6 +161,7 @@ bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 		return true;
 	}
 
+	/// O while pesquisa o lugar do novo No na lista
 	No *aux = lista->comeco;
 
 	while (aux != NULL) {
@@ -160,18 +169,22 @@ bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 		aux = aux->proximo;
 	}
 
+	/// o novo No possui o menor expoente da lista
 	if (aux == NULL) {
 		return inserirFimLista(lista, cons, exp);
 	}
 
+	/// ja existe o um monomio com o mesmo expoente (somamos as duas constantes)
 	if (aux->expoente == exp) {
 		aux->constante += cons;
 
-		if (aux->constante == 0.0) removerDaLista(lista, exp);
+		/// caso a soma seja zero, excluimos o monomio da lista (qualquer numero multiplicado por zero da zero)
+		if (aux->constante == 0.0) removerDaLista(lista, exp); 
 
 		return true;
 	}
 
+	/// o novo No tem o maior expoente e, por causa disso, precisamos inseri-lo de uma maneira diferente
 	if (aux->expoente == lista->comeco->expoente) {
 		No *novoElemento = criarNo(cons, exp);
 
@@ -184,6 +197,7 @@ bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 		return true;
 	}
 
+	/// o novo No precisa ser inserido no meio e possui um expsoente diferente de qualquer outro da lista
 	No *novoElemento = criarNo(cons, exp);
 
 	if (novoElemento == NULL) return false;
@@ -202,11 +216,13 @@ void imprimirLista(Lista *lista)
 
 	No *aux = lista->comeco;
 
+	/// esta funcao considera uma lista sem elementos como um polinomio nulo
 	if (listaEstaVazia(*lista)) {
 		cout << "0";
 		return;
 	}
 
+	/// precorre a lista imprimindo cada monomio da maneira mais adequada
 	while (aux != NULL) {
 		if (aux->expoente > 1)
 			cout << "(" << aux->constante << ")x^(" << aux->expoente << ") ";
@@ -254,7 +270,8 @@ bool apagaPolinomio(Lista *polinomio)
 	No *monomio_removido;
 	int i = 0;
 
-	while (!listaEstaVazia(*polinomio) && i <= 100) {
+	/// varre a lista encontrando os Nos e apagando cada um deles
+	while (!listaEstaVazia(*polinomio) && i <= 1000) {
 		if (elementoExiste(polinomio, i)) {
 			monomio_removido = removerDaLista(polinomio, i);
 			delete monomio_removido;
@@ -267,6 +284,7 @@ bool apagaPolinomio(Lista *polinomio)
 
 double potencia(double base, int expoente)
 {
+	/// funcao recursiva que calcula a potencia de um numero
 	if (expoente >= 1) {
 		return base * potencia(base, expoente - 1);
 	}
@@ -278,8 +296,10 @@ double potencia(double base, int expoente)
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS ABAIXO
 bool multiplicarPolinomios(Lista *produto, Lista *pol1, Lista *pol2)
 {
+	/// verifica a validade dos argumentos
 	if (pol1 == NULL || pol2 == NULL || produto == NULL) return false;
 
+	/// a lista apontada por produto precisa
 	if (!listaEstaVazia(*produto)) {
 		if (!apagaPolinomio(produto)) return false;
 	}
