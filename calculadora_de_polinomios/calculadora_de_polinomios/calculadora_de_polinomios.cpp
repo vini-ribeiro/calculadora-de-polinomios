@@ -54,7 +54,7 @@ bool elementoExiste(Lista *lista, int grauMonomio)
 	if (listaEstaVazia(*lista)) return false;
 
 	No *aux = lista->comeco;
-	
+
 	/// varre a lista ate encontrar
 	while (aux != NULL) {
 		if (aux->expoente == grauMonomio) return true;
@@ -147,7 +147,7 @@ bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 	if (exp < 0) return false;
 
 	/// caso especial de um monomio (a constante zerada é como se não existisse)
-	if (cons == 0.0) return true; 
+	if (cons == 0.0) return true;
 
 	/// inserção de um elemento em uma lista vazia
 	if (listaEstaVazia(*lista)) {
@@ -179,7 +179,7 @@ bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 		aux->constante += cons;
 
 		/// caso a soma seja zero, excluimos o monomio da lista (qualquer numero multiplicado por zero da zero)
-		if (aux->constante == 0.0) removerDaLista(lista, exp); 
+		if (aux->constante == 0.0) removerDaLista(lista, exp);
 
 		return true;
 	}
@@ -267,16 +267,14 @@ bool apagaPolinomio(Lista *polinomio)
 
 	if (listaEstaVazia(*polinomio)) return true;
 
-	No *monomio_removido;
-	int i = 0;
+	No *aux = polinomio->comeco;
+	No *monomio_apagar = aux;
 
 	/// varre a lista encontrando os Nos e apagando cada um deles
-	while (!listaEstaVazia(*polinomio) && i <= 1000) {
-		if (elementoExiste(polinomio, i)) {
-			monomio_removido = removerDaLista(polinomio, i);
-			delete monomio_removido;
-		}
-		++i;
+	while (aux != NULL) {
+		aux = aux->proximo;
+		if (monomio_apagar != NULL) delete monomio_apagar;
+		monomio_apagar = aux;
 	}
 
 	return true;
@@ -538,7 +536,7 @@ int main()
 	cout << "\nProduto do quociente por um escalar: ";
 	imprimirLista(produtoEscalar);
 	cout << endl;
-	
+
 	cout << "\nEncontrando o valor numeico de um polinomio: \nB(-7) = " << valorNumericoPolinomio(&Bx, -7) << endl;
 
 	return 0;
