@@ -417,7 +417,7 @@ bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *
 
 	Lista *aux_resto = new Lista;
 	inicializarLista(*aux_resto);
-
+	
 	do {
 		/// faz o calculo do monomio que vai no quociente
 		constante_quociente = (double) (primeiro_monomio_dividendo->constante) / (primeiro_monomio_divisor->constante);
@@ -541,7 +541,7 @@ int main()
 	cout << "\nProduto do quociente por um escalar: ";
 	imprimirLista(produtoEscalar);
 	cout << endl;
-
+	
 	cout << "\nEncontrando o valor numeico de um polinomio: \nB(-7) = " << valorNumericoPolinomio(&Bx, -7) << endl;
 
 	return 0;
