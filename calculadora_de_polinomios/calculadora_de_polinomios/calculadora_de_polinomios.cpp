@@ -18,7 +18,7 @@ struct Lista {
 
 No* criarNo(double valorConstante, int valorExpoente)
 {
-	/// funcao para alocar memoria e atribuir os valores ao No
+	///verifica se tudo ocorre bem, inicializa os ponteiros e atribui os valores as variaveis
 	No *novoNo = new No;
 
 	if (novoNo == NULL) return NULL;
@@ -33,14 +33,14 @@ No* criarNo(double valorConstante, int valorExpoente)
 
 void inicializarLista(Lista &lista)
 {
-	/// inicia as variaveis da lista
+	/// inicializa os ponteiros
 	lista.comeco = NULL;
 	lista.fim = NULL;
 }
 
 bool listaEstaVazia(Lista &lista)
 {
-	/// retorna true se a lista estiver vazia (false caso nao esteja)
+	/// se nao tem ninguem no comeco retorna true
 	if (lista.comeco == NULL) return true;
 
 	return false;
@@ -48,14 +48,14 @@ bool listaEstaVazia(Lista &lista)
 
 bool elementoExiste(Lista *lista, int grauMonomio)
 {
-	/// retorna true caso exista um monomio com o mesmo grau de grauMonomio
+	/// os ifs verificam a validade dos argumentos
 	if (lista == NULL) return false;
 
 	if (listaEstaVazia(*lista)) return false;
 
 	No *aux = lista->comeco;
 
-	/// varre a lista ate encontrar
+	/// percorre a lista procurando pelo elemento
 	while (aux != NULL) {
 		if (aux->expoente == grauMonomio) return true;
 		aux = aux->proximo;
@@ -66,6 +66,7 @@ bool elementoExiste(Lista *lista, int grauMonomio)
 
 No* removerDaLista(Lista *lista, int grauMonomio)
 {
+	/// os ifs verificam a validade dos argumentos
 	if (lista == NULL) return NULL;
 
 	if (listaEstaVazia(*lista)) return NULL;
@@ -77,8 +78,10 @@ No* removerDaLista(Lista *lista, int grauMonomio)
 		aux = aux->proximo;
 	}
 
+	/// se aux eh null entao o elemento nao existe
 	if (aux == NULL) return NULL;
 
+	/// a lista so tem um elemento
 	if (lista->comeco->expoente == aux->expoente && lista->fim->expoente == aux->expoente) {
 		lista->comeco = NULL;
 		lista->fim = NULL;
@@ -86,6 +89,7 @@ No* removerDaLista(Lista *lista, int grauMonomio)
 		return aux;
 	}
 
+	/// faz a retirada de um elemento que esta no comeco
 	if (lista->comeco->expoente == aux->expoente) {
 		lista->comeco = aux->proximo;
 		lista->comeco->anterior = NULL;
@@ -95,6 +99,7 @@ No* removerDaLista(Lista *lista, int grauMonomio)
 		return aux;
 	}
 
+	/// faz a retirada de um elemento que esta no final
 	if (lista->fim->expoente == aux->expoente) {
 		lista->fim = aux->anterior;
 		lista->fim->proximo = NULL;
@@ -104,6 +109,7 @@ No* removerDaLista(Lista *lista, int grauMonomio)
 		return aux;
 	}
 
+	/// faz a retirada de um elemto que esta no meio 
 	aux->anterior->proximo = aux->proximo;
 	aux->proximo->anterior = aux->anterior;
 
@@ -115,9 +121,10 @@ No* removerDaLista(Lista *lista, int grauMonomio)
 
 bool inserirFimLista(Lista *lista, double cons, int exp)
 {
+	/// os ifs verificam a validade dos argumentos
 	if (lista == NULL) return false;
 
-	if (exp < 0) return false;
+	if (exp < 0 || cons > 1000) return false;
 
 	if (cons == 0.0) return true;
 
@@ -125,6 +132,7 @@ bool inserirFimLista(Lista *lista, double cons, int exp)
 
 	if (novoElemento == NULL) return false;
 
+	/// insere numa lista vazia
 	if (listaEstaVazia(*lista)) {
 		lista->comeco = novoElemento;
 		lista->fim = novoElemento;
@@ -132,6 +140,7 @@ bool inserirFimLista(Lista *lista, double cons, int exp)
 		return true;
 	}
 
+	/// insere numa lista que nao esta vazia
 	novoElemento->anterior = lista->fim;
 	lista->fim->proximo = novoElemento;
 	lista->fim = novoElemento;
@@ -141,15 +150,13 @@ bool inserirFimLista(Lista *lista, double cons, int exp)
 
 bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 {
-	/// os proximos dois ifs verificam se os argumentos são validos
+	/// os ifs verificam a validade dos argumentos
 	if (lista == NULL) return false;
 
-	if (exp < 0) return false;
+	if (exp < 0 || cons > 1000) return false;
 
-	/// caso especial de um monomio (a constante zerada é como se não existisse)
 	if (cons == 0.0) return true;
 
-	/// inserção de um elemento em uma lista vazia
 	if (listaEstaVazia(*lista)) {
 		No *novoElemento = criarNo(cons, exp);
 
@@ -161,30 +168,29 @@ bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 		return true;
 	}
 
-	/// O while pesquisa o lugar do novo No na lista
 	No *aux = lista->comeco;
 
+	/// procura o lugar do novo elemento na lista
 	while (aux != NULL) {
 		if (aux->expoente <= exp) break;
 		aux = aux->proximo;
 	}
 
-	/// o novo No possui o menor expoente da lista
+	/// o elemento tem o menor grau
 	if (aux == NULL) {
 		return inserirFimLista(lista, cons, exp);
 	}
 
-	/// ja existe o um monomio com o mesmo expoente (somamos as duas constantes)
+	/// ja existe um elemento com o mesmo grau que o novo (apenas somamos as constantes e, se der zero, excluimos da lista)
 	if (aux->expoente == exp) {
 		aux->constante += cons;
 
-		/// caso a soma seja zero, excluimos o monomio da lista (qualquer numero multiplicado por zero da zero)
 		if (aux->constante == 0.0) removerDaLista(lista, exp);
 
 		return true;
 	}
 
-	/// o novo No tem o maior expoente e, por causa disso, precisamos inseri-lo de uma maneira diferente
+	/// o elemento tem o maior grau
 	if (aux->expoente == lista->comeco->expoente) {
 		No *novoElemento = criarNo(cons, exp);
 
@@ -197,7 +203,7 @@ bool inserirListaEmOrdem(Lista *lista, double cons, int exp)
 		return true;
 	}
 
-	/// o novo No precisa ser inserido no meio e possui um expsoente diferente de qualquer outro da lista
+	/// elemento vai no meio da lista
 	No *novoElemento = criarNo(cons, exp);
 
 	if (novoElemento == NULL) return false;
@@ -216,65 +222,46 @@ void imprimirLista(Lista *lista)
 
 	No *aux = lista->comeco;
 
-	/// esta funcao considera uma lista sem elementos como um polinomio nulo
 	if (listaEstaVazia(*lista)) {
 		cout << "0";
 		return;
 	}
 
-	/// precorre a lista imprimindo cada monomio da maneira mais adequada
+	/// percorre a lista imprimindo os elementos
 	while (aux != NULL) {
-		if (aux->expoente > 1)
+		if (aux->expoente > 1) /// imprime monomio completo caso seja maior que 1
 			cout << "(" << aux->constante << ")x^(" << aux->expoente << ") ";
-		else if (aux->expoente == 1)
+		else if (aux->expoente == 1) /// imprime somente a constante e a variavel
 			cout << "(" << aux->constante << ")x ";
-		else
+		else /// imprime somente a constante
 			cout << "(" << aux->constante << ") ";
 
+		/// imprime o sinal de operacao ate o penultimo monomio
 		if (aux->proximo != NULL) cout << "+ ";
 
 		aux = aux->proximo;
 	}
-}
-
-No* retirarInicioLista(Lista *lista)
-{
-	if (lista == NULL) return NULL;
-
-	if (listaEstaVazia(*lista)) return NULL;
-
-	if (lista->comeco == lista->fim) {
-		No *elementoRetirar = lista->comeco;
-		lista->comeco = NULL;
-		lista->fim = NULL;
-
-		return elementoRetirar;
-	}
-
-	No *elementoRetirar = lista->comeco;
-	lista->comeco = lista->comeco->proximo;
-	lista->comeco->anterior = NULL;
-	elementoRetirar->proximo = NULL;
-
-	return elementoRetirar;
 }
 /// FUNCOES RELACIONADAS COM O FUNCIONAMENTO DA LISTA ACIMA
 
 /// FUNCOES AUXILIARES ABAIXO
 bool apagaPolinomio(Lista *polinomio)
 {
+	/// os ifs verificam a validade dos argumentos
 	if (polinomio == NULL) return false;
 
 	if (listaEstaVazia(*polinomio)) return true;
 
-	No *aux = polinomio->comeco;
-	No *monomio_apagar = aux;
+	No *monomio_removido;
+	int i = 0;
 
-	/// varre a lista encontrando os Nos e apagando cada um deles
-	while (aux != NULL) {
-		aux = aux->proximo;
-		if (monomio_apagar != NULL) delete monomio_apagar;
-		monomio_apagar = aux;
+	/// procura os monomios com cada indice de 0 a 1000 (lmite para o programa)
+	while (!listaEstaVazia(*polinomio) && i <= 1000) {
+		if (elementoExiste(polinomio, i)) {
+			monomio_removido = removerDaLista(polinomio, i);
+			delete monomio_removido;
+		}
+		++i;
 	}
 
 	return true;
@@ -282,7 +269,6 @@ bool apagaPolinomio(Lista *polinomio)
 
 double potencia(double base, int expoente)
 {
-	/// funcao recursiva que calcula a potencia de um numero
 	if (expoente >= 1) {
 		return base * potencia(base, expoente - 1);
 	}
@@ -294,10 +280,9 @@ double potencia(double base, int expoente)
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS ABAIXO
 bool multiplicarPolinomios(Lista *produto, Lista *pol1, Lista *pol2)
 {
-	/// verifica a validade dos argumentos
+	/// os ifs verificam a validade dos argumentos
 	if (pol1 == NULL || pol2 == NULL || produto == NULL) return false;
 
-	/// a lista apontada por produto precisa
 	if (!listaEstaVazia(*produto)) {
 		if (!apagaPolinomio(produto)) return false;
 	}
@@ -306,6 +291,7 @@ bool multiplicarPolinomios(Lista *produto, Lista *pol1, Lista *pol2)
 
 	No *aux1 = pol1->comeco, *aux2;
 
+	/// faz a permutacao dos polinomios guardando cada resultado na lista produto
 	while (aux1 != NULL) {
 		aux2 = pol2->comeco;
 		while (aux2 != NULL) {
@@ -321,6 +307,7 @@ bool multiplicarPolinomios(Lista *produto, Lista *pol1, Lista *pol2)
 
 bool multiplicarPolinomios(Lista *produto, Lista *pol, double escalar)
 {
+	/// os ifs verificam a validade dos argumentos
 	if (pol == NULL || produto == NULL) return false;
 
 	if (!listaEstaVazia(*produto)) {
@@ -329,6 +316,7 @@ bool multiplicarPolinomios(Lista *produto, Lista *pol, double escalar)
 
 	if (listaEstaVazia(*pol)) return true;
 
+	/// percorre a lista passando cada monomio multiplicado pelo escalar para a lista produto
 	No *aux = pol->comeco;
 	while (aux != NULL) {
 		inserirListaEmOrdem(produto, (aux->constante) * escalar, (aux->expoente));
@@ -341,6 +329,7 @@ bool multiplicarPolinomios(Lista *produto, Lista *pol, double escalar)
 
 bool subtrairDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 {
+	/// os ifs verificam a validade dos argumentos
 	if (pol1 == NULL || pol2 == NULL || resultado == NULL) return false;
 
 	if (!listaEstaVazia(*resultado)) {
@@ -349,11 +338,13 @@ bool subtrairDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 
 	No *aux = pol1->comeco;
 
+	/// passa pol1 para a lista resultado
 	while (aux != NULL) {
 		inserirListaEmOrdem(resultado, aux->constante, aux->expoente);
 		aux = aux->proximo;
 	}
 
+	/// passa pol2 para a lista resultado com o sinal invertido (a funcao de insercao vai fazer o trabalho de subtrair)
 	aux = pol2->comeco;
 	while (aux != NULL) {
 		inserirListaEmOrdem(resultado, (aux->constante) * (-1), aux->expoente);
@@ -365,6 +356,7 @@ bool subtrairDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 
 bool somarDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 {
+	/// os ifs verificam a validade dos argumentos
 	if (pol1 == NULL || pol2 == NULL || resultado == NULL) return false;
 
 	if (!listaEstaVazia(*resultado)) {
@@ -373,11 +365,13 @@ bool somarDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 
 	No *aux = pol1->comeco;
 
+	/// passa o pol1 para resultado
 	while (aux != NULL) {
 		inserirListaEmOrdem(resultado, aux->constante, aux->expoente);
 		aux = aux->proximo;
 	}
 
+	/// passa o pol2 para resultado (a funcao de insercao ira somar os valres)
 	aux = pol2->comeco;
 	while (aux != NULL) {
 		inserirListaEmOrdem(resultado, (aux->constante), aux->expoente);
@@ -389,6 +383,7 @@ bool somarDoisPolinomios(Lista *resultado, Lista *pol1, Lista *pol2)
 
 bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *divisor)
 {
+	/// os ifs abaixo verificam a validade dos argumentos
 	if (dividendo == NULL || divisor == NULL || quociente == NULL || resto == NULL) return false;
 
 	if (!listaEstaVazia(*quociente)) {
@@ -412,6 +407,7 @@ bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *
 
 		return true;
 	}
+	////// os ifs acima verificam a validade dos argumentos
 
 	double constante_quociente;
 	int expoente_quociente;
@@ -423,16 +419,23 @@ bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *
 	inicializarLista(*aux_resto);
 
 	do {
+		/// faz o calculo do monomio que vai no quociente
 		constante_quociente = (double) (primeiro_monomio_dividendo->constante) / (primeiro_monomio_divisor->constante);
 		expoente_quociente = (primeiro_monomio_dividendo->expoente) - (primeiro_monomio_divisor->expoente);
 
+		/// insere o monomio no quociente. Depois multiplica pelo divisor e subtrai do dividendo
+		/// os monomios sao guardados no quociente, sendo que o resto eh sempre apagado
 		inserirListaEmOrdem(quociente, constante_quociente, expoente_quociente);
 		multiplicarPolinomios(aux_resto, divisor, quociente);
 		subtrairDoisPolinomios(resto, dividendo, aux_resto);
 
+		/// caso a subtracao nao deixe resto, significa que encontramos o quociente
 		if (listaEstaVazia(*resto)) break;
 
+		/// sempre aponta para o comeco do resto (que muda a cada iteracao e na regra de divisao sempre temos ele como referencia)
 		primeiro_monomio_dividendo = resto->comeco;
+
+		/// verifica se da para continuar a divisao comparando os grau do resto com o do divisor
 	} while (primeiro_monomio_dividendo->expoente >= primeiro_monomio_divisor->expoente);
 
 	apagaPolinomio(aux_resto);
@@ -443,6 +446,7 @@ bool dividirPolinomios(Lista *quociente, Lista *resto, Lista *dividendo, Lista *
 
 double valorNumericoPolinomio(Lista *polinomio, double x)
 {
+	/// percorre a lista fazendo a potencia de x e depois multiplicando pela constante
 	double fx = 0.0;
 	No *aux = polinomio->comeco;
 	while (aux != NULL) {
@@ -450,6 +454,7 @@ double valorNumericoPolinomio(Lista *polinomio, double x)
 		aux = aux->proximo;
 	}
 
+	/// retorna a soma
 	return fx;
 }
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS ACIMA
