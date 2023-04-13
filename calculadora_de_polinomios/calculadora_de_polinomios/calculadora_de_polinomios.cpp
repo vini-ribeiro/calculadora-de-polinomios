@@ -465,16 +465,13 @@ double valorNumericoPolinomio(Lista *polinomio, double x)
 int menu()
 {
 	cout << "Insira o numero correspondente a uma das opcoes abaixo (1 - x)" << endl;
-	cout << "1 - Inserir um polinomio" << endl;
-	cout << "2 - Excluir um polinomio" << endl;
-	cout << "3 - Somar dois polinomios" << endl;
-	cout << "4 - Subtrair dois polinomios" << endl;
-	cout << "5 - Multiplicar dois polinomios" << endl;
-	cout << "6 - Multiplicar dois polinomios" << endl;
-	cout << "7 - Dividir dois polinomios" << endl;
-	cout << "8 - Determinar o valor numérico de um polinômio" << endl;
-	cout << "9 - Vizualizar polinomios inseridos" << endl;
-	cout << "10 - Sair" << endl;
+	cout << "1 - Somar dois polinomios" << endl;
+	cout << "2 - Subtrair dois polinomios" << endl;
+	cout << "3 - Multiplicar dois polinomios" << endl;
+	cout << "4 - Multiplicar polinomio por escalar" << endl;
+	cout << "5 - Dividir dois polinomios" << endl;
+	cout << "6 - Determinar o valor numï¿½rico de um polinï¿½mio" << endl;
+	cout << "8 - Sair" << endl;
 
 	int opcao;
 	cin >> opcao;
@@ -491,35 +488,216 @@ Lista* criarLista()
 	return lista;
 }
 
-void imprimirTodosPolinomios(Lista *polinomios[])
-{
-	
-}
-
 /// FUNCOES RELACIONADAS COM A INTERFACE
 
 int main()
 {
-	Lista *polinomios[QUANT_POLINOMIOS] = {NULL};
+	Lista *polinomio1, *polinomio2, *polinomio3, *polinomio4;
+	polinomio1 = criarLista();
+	polinomio2 = criarLista();
+	polinomio3 = criarLista();
+	polinomio4 = criarLista();
 	int opcao;
+	int expoente;
+	double coeficiente;
 
 	do {
 		opcao = menu();
 		switch (opcao) {
 			case 1:
-			cout << "Insercao de Polinomio (expoente = -1 para encerrar):" << endl;
-			int coeficiente, expoente;
+			cout << "Insercao do primeiro Polinomio (expoente = -1 para encerrar):" << endl;
+			
 			do {
 				cout << "Coeficiente: ";
 				cin >> coeficiente;
 				cout << "Expoente: ";
 				cin >> expoente;
+				inserirListaEmOrdem(polinomio1, coeficiente, expoente);
 			} while(expoente > -1);
+			
+			cout << "Insercao do segundo Polinomio (expoente = -1 para encerrar):" << endl;
+			
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+				inserirListaEmOrdem(polinomio2, coeficiente, expoente);
+			} while(expoente > -1);
+			
+			somarDoisPolinomios(polinomio3, polinomio1, polinomio2);
+			
+			cout<<"Resultado: ";
+	        imprimirLista(polinomio3);
+	        cout<<endl;
+			
+			apagaPolinomio(polinomio1);
+			apagaPolinomio(polinomio2);
+			apagaPolinomio(polinomio3);
+			apagaPolinomio(polinomio4);
+			
+			break;
+			
+			case 2:
+			cout << "Insercao do primeiro Polinomio (expoente = -1 para encerrar):" << endl;
+			
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+				inserirListaEmOrdem(polinomio1, coeficiente, expoente);
+			} while(expoente > -1);
+			
+			cout << "Insercao do segundo Polinomio (expoente = -1 para encerrar):" << endl;
+			
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+				inserirListaEmOrdem(polinomio2, coeficiente, expoente);
+			} while(expoente > -1);
+			
+			subtrairDoisPolinomios(polinomio3, polinomio1, polinomio2);
+			
+			cout<<"Resultado: ";
+	        imprimirLista(polinomio3);
+	        cout<<endl;
+			
+			apagaPolinomio(polinomio1);
+			apagaPolinomio(polinomio2);
+			apagaPolinomio(polinomio3);
+			apagaPolinomio(polinomio4);
+			
+			break;
+			
+			case 3:
+			cout << "Insercao do primeiro Polinomio (expoente = -1 para encerrar):" << endl;
+			
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+				inserirListaEmOrdem(polinomio1, coeficiente, expoente);
+			} while(expoente > -1);
+			
+			cout << "Insercao do segundo Polinomio (expoente = -1 para encerrar):" << endl;
+			
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+				inserirListaEmOrdem(polinomio2, coeficiente, expoente);
+			} while(expoente > -1);
+			
+			multiplicarPolinomios(polinomio3, polinomio1, polinomio2);
+			
+			cout<<"Resultado: ";
+	        imprimirLista(polinomio3);
+	        cout<<endl;
+			
+			apagaPolinomio(polinomio1);
+			apagaPolinomio(polinomio2);
+			apagaPolinomio(polinomio3);
+			apagaPolinomio(polinomio4);
+			
+			break;
+			
+			case 4:
+			cout << "Insercao do primeiro Polinomio (expoente = -1 para encerrar):" << endl;
+			
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+				inserirListaEmOrdem(polinomio1, coeficiente, expoente);
+			} while(expoente > -1);
+			
+			cout << "Insercao do escalar:" << endl;
+			int escalar;
+			cin>>escalar;
+			
+			
+			multiplicarPolinomios(polinomio3, polinomio1, escalar);
+			
+			cout<<"Resultado: ";
+	        imprimirLista(polinomio3);
+	        cout<<endl;
+			
+			apagaPolinomio(polinomio1);
+			apagaPolinomio(polinomio2);
+			apagaPolinomio(polinomio3);
+			apagaPolinomio(polinomio4);
+			
+			break;
+			
+			case 5:
+			cout << "Insercao do primeiro Polinomio (expoente = -1 para encerrar):" << endl;
+			
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+				inserirListaEmOrdem(polinomio1, coeficiente, expoente);
+			} while(expoente > -1);
+			
+			cout << "Insercao do segundo Polinomio (expoente = -1 para encerrar):" << endl;
+			
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+				inserirListaEmOrdem(polinomio2, coeficiente, expoente);
+			} while(expoente > -1);
+			
+			dividirPolinomios(polinomio4, polinomio3, polinomio1, polinomio2);
+			
+			cout<<"Resto: ";
+	        imprimirLista(polinomio3);
+	        cout<<endl;
+	        cout<<"Quociente: ";
+	        imprimirLista(polinomio4);
+	        cout<<endl;
+			
+			apagaPolinomio(polinomio1);
+			apagaPolinomio(polinomio2);
+			apagaPolinomio(polinomio3);
+			apagaPolinomio(polinomio4);
+			
+			break;
+			
+			case 6:
+			cout << "Insercao do Polinomio (expoente = -1 para encerrar):" << endl;
+			
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+				inserirListaEmOrdem(polinomio1, coeficiente, expoente);
+			} while(expoente > -1);
+			
+			cout << "Insercao do valor de x:" << endl;
+			double valorX;
+			cin>>valorX;
+			
+			cout<<"Para x = "<<valorX<<" P(x) = "<<valorNumericoPolinomio(polinomio1, valorX)<<endl;
+			
+			apagaPolinomio(polinomio1);
+			apagaPolinomio(polinomio2);
+			apagaPolinomio(polinomio3);
+			apagaPolinomio(polinomio4);
 			
 			break;
 		}
 
-	} while (opcao < 1 || opcao > 9);
+	} while (opcao < 1 || opcao > 7);
 
 	return 0;
 }
