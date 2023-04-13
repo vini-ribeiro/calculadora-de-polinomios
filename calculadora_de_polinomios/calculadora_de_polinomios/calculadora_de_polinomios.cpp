@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#define QUANT_POLINOMIOS 10
+
 /// FUNCOES RELACIONADAS COM O FUNCIONAMENTO DA LISTA ABAIXO
 struct No {
 	double constante;
@@ -459,90 +461,65 @@ double valorNumericoPolinomio(Lista *polinomio, double x)
 }
 /// FUNCOES RELACIONADAS COM AS OPERACOES COM POLINOMIOS ACIMA
 
+/// FUNCOES RELACIONADAS COM A INTERFACE
+int menu()
+{
+	cout << "Insira o numero correspondente a uma das opcoes abaixo (1 - x)" << endl;
+	cout << "1 - Inserir um polinomio" << endl;
+	cout << "2 - Excluir um polinomio" << endl;
+	cout << "3 - Somar dois polinomios" << endl;
+	cout << "4 - Subtrair dois polinomios" << endl;
+	cout << "5 - Multiplicar dois polinomios" << endl;
+	cout << "6 - Multiplicar dois polinomios" << endl;
+	cout << "7 - Dividir dois polinomios" << endl;
+	cout << "8 - Determinar o valor numérico de um polinômio" << endl;
+	cout << "9 - Vizualizar polinomios inseridos" << endl;
+	cout << "10 - Sair" << endl;
+
+	int opcao;
+	cin >> opcao;
+	return opcao;
+}
+
+Lista* criarLista()
+{
+	Lista *lista = new Lista;
+	if (lista == NULL) return NULL;
+
+	inicializarLista(*lista);
+
+	return lista;
+}
+
+void imprimirTodosPolinomios(Lista *polinomios[])
+{
+	
+}
+
+/// FUNCOES RELACIONADAS COM A INTERFACE
+
 int main()
 {
-	Lista Ax;
+	Lista *polinomios[QUANT_POLINOMIOS] = {NULL};
+	int opcao;
 
-	inicializarLista(Ax);
+	do {
+		opcao = menu();
+		switch (opcao) {
+			case 1:
+			cout << "Insercao de Polinomio (expoente = -1 para encerrar):" << endl;
+			int coeficiente, expoente;
+			do {
+				cout << "Coeficiente: ";
+				cin >> coeficiente;
+				cout << "Expoente: ";
+				cin >> expoente;
+			} while(expoente > -1);
+			
+			break;
+		}
 
-	inserirListaEmOrdem(&Ax, 1, 2);
-	inserirListaEmOrdem(&Ax, -2, 1);
-	inserirListaEmOrdem(&Ax, 3, 0);
-	inserirListaEmOrdem(&Ax, 1, 1);
-	inserirListaEmOrdem(&Ax, -2, 0);
-
-	Lista Bx;
-
-	inicializarLista(Bx);
-
-	inserirListaEmOrdem(&Bx, 6, 6);
-	inserirListaEmOrdem(&Bx, 5, 5);
-	inserirListaEmOrdem(&Bx, 2, 4);
-	inserirListaEmOrdem(&Bx, -3, 3);
-	inserirListaEmOrdem(&Bx, 0, 2);
-	inserirListaEmOrdem(&Bx, 1, 1);
-	inserirListaEmOrdem(&Bx, -1, 0);
-	inserirListaEmOrdem(&Bx, 1, 2);
-	inserirListaEmOrdem(&Bx, 2, 1);
-	inserirListaEmOrdem(&Bx, 4, 0);
-
-	cout << "A(x) = ";
-	imprimirLista(&Ax);
-	cout << endl;
-	cout << "B(x) = ";
-	imprimirLista(&Bx);
-	cout << endl;
-
-	///TESTE DE MULTIPLICACAO DOS POLINOMIOS
-	Lista *produto = new Lista;
-	inicializarLista(*produto);
-	multiplicarPolinomios(produto, &Ax, &Bx);
-
-	cout << "\nProduto de dois polinomios: A(x) * B(x) = ";
-	imprimirLista(produto);
-	cout << endl;
-
-	///TESTE DE SUBTRACAO DOS POLINOMIOS
-	Lista *sub = new Lista;
-	inicializarLista(*sub);
-	subtrairDoisPolinomios(sub, &Ax, &Bx);
-
-	cout << "\nSubtracao de dois polinomios: A(x) - B(x) = ";
-	imprimirLista(sub);
-	cout << endl;
-
-	///TESTE DE SOMA DOS POLINOMIOS
-	Lista *sum = new Lista;
-	inicializarLista(*sum);
-	somarDoisPolinomios(sum, &Ax, &Bx);
-
-	cout << "\nSoma de dois polinomios: A(x) + B(x) = ";
-	imprimirLista(sum);
-	cout << endl;
-
-	///TESTE DE DIVISAO DE POLINOMIOS
-	Lista *quociente = new Lista;
-	Lista *resto = new Lista;
-	inicializarLista(*quociente);
-	inicializarLista(*resto);
-	dividirPolinomios(quociente, resto, &Bx, &Ax);
-
-	cout << "\nDivisao de dois polinomios: B(x)/A(x): ";
-	cout << "\nQuociente: ";
-	imprimirLista(quociente);
-	cout << "\nResto: ";
-	imprimirLista(resto);
-	cout << endl;
-
-	Lista *produtoEscalar = new Lista;
-	inicializarLista(*produtoEscalar);
-	multiplicarPolinomios(produtoEscalar, quociente, 5);
-
-	cout << "\nProduto do quociente por um escalar: ";
-	imprimirLista(produtoEscalar);
-	cout << endl;
-
-	cout << "\nEncontrando o valor numeico de um polinomio: \nB(-7) = " << valorNumericoPolinomio(&Bx, -7) << endl;
+	} while (opcao < 1 || opcao > 9);
 
 	return 0;
 }
